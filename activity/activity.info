@@ -1,0 +1,10 @@
+[Activity]
+name = Story.js
+bundle_id = org.sugarlabs.StoryJs
+icon = activity-story
+exec = sugar-activity-web
+activity_version = 1
+show_launcher = yes
+max_participants = 1
+summary = Create a story based in the imges displayed
+repository = https://github.com/godiard/story-js.git
