@@ -2,8 +2,6 @@ define(function (require) {
 
     require("easel");
 
-    require("canvasToBlob");
-
     var localizationData = require("localizationData");
     var lang = navigator.language.substr(0, 2);
 
@@ -21,6 +19,7 @@ define(function (require) {
     var smallScreen = (window.innerWidth < 700) || (window.innerHeight < 600);
     var font = smallScreen ? "16px Arial" : "24px Arial";
 
+    var LINE_WIDTH = 1;
     var BLACK = "#000000";
     var WHITE = "#ffffff";
 
@@ -88,10 +87,7 @@ define(function (require) {
         // Enable touch interactions if supported on the current device
         createjs.Touch.enable(this.stage);
 
-        this.init = function (data, imagesData, canRemove) {
-            this._data = data;
-            this.imagesData = imagesData
-            this.canRemove = canRemove;
+        this.init = function () {
             this.stage.removeAllChildren();
             this._backContainer = new createjs.Container();
             var background = new createjs.Shape();
@@ -102,57 +98,10 @@ define(function (require) {
             this.stage.addChild(this._backContainer);
             this._backContainer.addChild(background);
             this._backContainer.cache(0, 0, this.canvas.width, this.canvas.height);
-
-            if (this._data != null) {
-                if (this._data['image_name'] != '' &&
-                    this._data['image_name'] != undefined) {
-                    this._image_x = this._data['img_x'];
-                    this._image_y = this._data['img_y'];
-                    this._image_width = this._data['img_w'];
-                    this._image_height = this._data['img_h'];
-                    this._image_name = this._data['image_name'];
-                    this._slideshow_duration = this._data['slideshow_duration'];
-
-                    if (this.imagesData != null) {
-                        this._setBackgroundImageDataUrl(
-                            this.imagesData[this._image_name]);
-                    };
-                } else {
-                    this._image_x = 0;
-                    this._image_y = 0;
-                    this._image_width = canvas.width;
-                    this._image_height = canvas.height;
-                    this._image_name = '';
-                    this._slideshow_duration = 10;
-                    this.createGlobes();
-                };
-            };
             this.stage.update();
         };
 
-        this._setBackgroundImageDataUrl = function(imageUrl) {
-            this._image_x = 0;
-            this._image_y = 0;
-            this._image_width = this._width;
-            this._image_height = this._height;
-            var img = new Image();
-            img.src = imageUrl;
-            bitmap = new createjs.Bitmap(img);
-            bitmap.setBounds(0, 0, img.width, img.height);
-            // calculate scale
-            var scale_x = this._width / img.width;
-            var scale_y = this._height / img.height;
-            var scale = Math.min(scale_x, scale_y);
-
-            bitmap.mouseEnabled = false;
-            bitmap.x = LINE_WIDTH;
-            bitmap.y = LINE_WIDTH;
-            bitmap.scaleX = scale;
-            bitmap.scaleY = scale;
-            this._backContainer.addChildAt(bitmap, 0);
-
-
-        };
+        return this;
     };
 
 

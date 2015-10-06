@@ -32,8 +32,15 @@ background-size: 100% 1.2em;
 }
 
 #mainCanvas {
-  background-color: #ffffff;
   position: absolute;
+  background-color: white;
+}
+
+#textEditor {
+  position: absolute;
+  resize: none;
+  font-size: 20px;
+  MARGIN: 0px;
 }
 
 /* This probably should be upstream (sugar-web, I don't know why

@@ -58,41 +58,23 @@ define(function (require) {
         require("persistence");
         var cordobaIO = new persistence.CordobaIO();
 
-        var mainCanvas = document.getElementById("mainCanvas");
-        // remove 5 more to be sure no scrollbars are visible
-        mainCanvas.height = window.innerHeight - sugarCellSize - 5;
-        mainCanvas.width = mainCanvas.height * 4 / 3;
-        mainCanvas.style.left = ((window.innerWidth - mainCanvas.width) / 2) + "px";
+        var textEditor = document.getElementById("textEditor");
+        textEditor.style.width = (window.innerWidth - sugarCellSize * 2) + 'px' ;
+        textEditor.style.height = "90px";
+        textEditor.style.left = sugarCellSize + "px";
+        textEditor.style.top = "15px";
 
-        var toonModel = new toon.Model(initialData, mainCanvas, tp);
-        toonModel.init();
-        toonModel.attachPrevNextButtons(previousButton, nextButton);
+        var mainCanvas = document.getElementById("mainCanvas");
+        mainCanvas.width = window.innerWidth - sugarCellSize * 2;
+        mainCanvas.height = window.innerWidth - sugarCellSize * 2;
+        mainCanvas.style.left = sugarCellSize + "px";
+        mainCanvas.style.top = "120px";
+
+        var storyViewer = story.StoryViewer(mainCanvas);
+        storyViewer.init();
 
         // load images
         var imageChooser = document.getElementById('image-loader');
-
-        var addButton = document.getElementById("add-button");
-        addButton.addEventListener('click', function (e) {
-            imageChooser.focus();
-            imageChooser.click();
-        });
-
-        // load fototoon files
-        var JSZip = require("jszip");
-        var toonChooser = document.getElementById('fototoon-loader');
-
-        // this part is a fake file selector to use in android
-        var fileSelector = document.getElementById('file-selector');
-
-        function selectFile(fileName) {
-            fileName = fileName + '.fototoon';
-            cordobaIO.read(fileName, function(content) {
-                var zip = new JSZip(content);
-                readFototoonFile(zip);
-            });
-
-            closeSelector();
-        };
 
         function closeSelector() {
             fileSelector.style.display = 'none';
@@ -139,65 +121,6 @@ define(function (require) {
             };
         };
 
-        toonChooser.addEventListener('click', function (event) {
-            this.value = null;
-        });
-
-        function readFototoonFile(zip) {
-            // read the content of the file with JSZip
-            var data = {};
-            // NOTE: This code assume data.json file
-            // is stored before the images
-            $.each(zip.files, function (index, zipEntry) {
-                console.log('reading ' + zipEntry.name);
-                if (zipEntry.name == 'data.json') {
-                    data = JSON.parse(zipEntry.asText());
-                    if (data['images'] == undefined) {
-                        data['images'] = {};
-                    };
-                } else {
-                    // load the image data in a blob, and read
-                    // with a filereader to store as a data url
-                    var imageBlob = new Blob(
-                        [zipEntry.asArrayBuffer()], {type: 'image/png'});
-                    var reader = new FileReader();
-                    reader.onloadend = (function () {
-                        // store the image data in the model data
-                        data['images'][zipEntry.name] = reader.result;
-                    });
-                    reader.readAsDataURL(imageBlob);
-                };
-            });
-
-            toonModel.setData(data);
-            if (!editMode) {
-                toonModel.changeToEditMode();
-                editMode = true;
-            };
-
-        };
-
-        toonChooser.addEventListener('change', function (event) {
-            // Read file here.
-            var reader = new FileReader();
-            reader.onload = (function(theFile) {
-                return function(e) {
-                    try {
-                        // read the content of the file with JSZip
-                        var zip = new JSZip(e.target.result);
-                        readFototoonFile(zip);
-                    } catch(e) {
-                        console.log('Exception ' + e.message);
-                        console.log('Reading file ' + theFile.name);
-                    };
-                };
-            })(file);
-            var file = toonChooser.files[0];
-            if (file) {
-                reader.readAsArrayBuffer(file);
-            };
-        }, false);
-
         function dataURItoString(dataURI) {
             // from http://stackoverflow.com/questions/4998908/
             // convert-data-uri-to-file-then-append-to-formdata/5100158#5100158
@@ -211,48 +134,7 @@ define(function (require) {
             return byteString;
         };
 
-        var saveButton = document.getElementById("doc-save");
-        saveButton.addEventListener('click', function (e) {
-            zip = new JSZip();
-            // this line is enough to read the file on the js version
-            // because the images data is stored as data uris.
-            // but the objective is have  file format compatible
-            // with the python version
-
-            // zip.file("data.json", JSON.stringify(toonModel.getData()));
-
-            if (!editMode) {
-                toonModel.finishSort();
-                toonModel.init();
-                editMode = true;
-            };
-
-            this.finishSort
-            // clone the data to remove the images
-            var dataWithoutImages = {}
-            dataWithoutImages['version'] = toonModel.getData()['version'];
-            dataWithoutImages['boxs'] = toonModel.getData()['boxs'];
-            zip.file("data.json", JSON.stringify(dataWithoutImages));
-
-            for(var key in toonModel.getData()['images']) {
-                var imageName = key;
-                console.log('saving image ' + imageName);
-                zip.file(imageName,
-                         dataURItoString(toonModel.getData()['images'][imageName]),
-                         {'binary': true});
-            };
-
-            var blob = zip.generate({type:"blob"});
-            if (onAndroid) {
-                cordobaIO.save(blob, toonModel.getTitle() + ".fototoon");
-                activity.showAlert(_('ToonSaved'),
-                    _('FileSavedSuccessfully'), null, null);
-            } else {
-                saveAs(blob, toonModel.getTitle() + ".fototoon");
-            };
-        });
-
-        var saveImageButton = document.getElementById("image-save");
+        var saveImageButton = document.getElementById("save-as-image");
 
         saveImageButton.addEventListener('click', function(e) {
             if (onAndroid) {
