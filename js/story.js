@@ -86,6 +86,8 @@ define(function (require) {
         this.stage = new createjs.Stage(canvas);
         // Enable touch interactions if supported on the current device
         createjs.Touch.enable(this.stage);
+        this._tileSize = this._height / 3;
+        this._animContainer = null;
 
         this.init = function () {
             this.stage.removeAllChildren();
@@ -98,6 +100,50 @@ define(function (require) {
             this.stage.addChild(this._backContainer);
             this._backContainer.addChild(background);
             this._backContainer.cache(0, 0, this.canvas.width, this.canvas.height);
+            this.stage.update();
+        };
+
+
+        this.animate = function() {
+            createjs.Ticker.setInterval(1000);
+            createjs.Ticker.addEventListener("tick", tick);
+            var step = 10;
+            var viewer = this;
+            function tick() {
+                viewer.showRandomCircles();
+                console.log(step);
+                if (step > 0) {
+                    step = step - 1;
+                } else {
+                    console.log('PAUSE');
+                    createjs.Ticker.removeEventListener("tick", tick);
+                    // Here we need load all the images and remove the circles
+
+                };
+            };
+        };
+
+        this.showRandomCircles = function() {
+            if (this._animContainer == null) {
+                this._animContainer = new createjs.Container();
+                this.stage.addChild(this._animContainer);
+            } else {
+                this._animContainer.removeAllChildren();
+            }
+
+            this._circles = [];
+            for (var i=0; i < 3; i++) {
+                for (var j=0; j < 3; j++) {
+                    if (Math.random() > 0.5) {
+                        var s = new createjs.Shape();
+                        s.graphics.beginFill(createjs.Graphics.getRGB(255,0,0));
+                        s.graphics.drawCircle((i + 0.5) * this._tileSize,
+                                     (j + 0.5) * this._tileSize,
+                                     this._tileSize / 2);
+                        this._animContainer.addChild(s);
+                    };
+                };
+            };
             this.stage.update();
         };
 

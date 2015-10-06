@@ -72,6 +72,7 @@ define(function (require) {
 
         var storyViewer = story.StoryViewer(mainCanvas);
         storyViewer.init();
+        storyViewer.animate();
 
         // load images
         var imageChooser = document.getElementById('image-loader');
