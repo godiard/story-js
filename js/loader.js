@@ -9,7 +9,7 @@ requirejs.config({
         activity: "../js",
         easel: "../lib/easeljs-0.8.1.min",
         preload: "../lib/preloadjs-0.6.1.min",
-        words_without_letters: "../js/words_without_letters",
+        images: "../js/images",
         story: "../js/story",
         localizationData: "../js/localization_data",
         filesaver: "../lib/FileSaver.min",

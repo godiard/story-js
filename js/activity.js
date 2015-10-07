@@ -74,6 +74,12 @@ define(function (require) {
         storyViewer.init();
         storyViewer.animate();
 
+        var reloadBtn = document.getElementById("reload");
+        reloadBtn.addEventListener('click', function(e) {
+            storyViewer.init();
+            storyViewer.animate();
+        });
+
         // load images
         var imageChooser = document.getElementById('image-loader');
 

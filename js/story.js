@@ -47,6 +47,8 @@ COLORS40 = [
 define(function (require) {
 
     require("easel");
+    // this is a array with the list of images available
+    var images = require('images');
 
     var localizationData = require("localizationData");
     var lang = navigator.language.substr(0, 2);
@@ -72,56 +74,6 @@ define(function (require) {
     var DEFAULT_FONT_SIZE = 14;
 
     story = {};
-
-    function createAsyncBitmap(box, url, callback) {
-        // Async creation of bitmap from SVG data
-        // Works with Chrome, Safari, Firefox (untested on IE)
-        var img = new Image();
-        img.onload = function () {
-            bitmap = new createjs.Bitmap(img);
-            bitmap.setBounds(0, 0, img.width, img.height);
-            bitmap.mouseEnabled = false;
-            callback(box, bitmap);
-        };
-        img.onerror = function (errorMsg, url, lineNumber) {
-            callback(box, null);
-        };
-        img.src = url;
-    };
-
-    function createAsyncBitmapButton(globe, url, callback) {
-        // creates a square black button with a image inside
-        // is used for the corner controls in the globe
-        var img = new Image();
-        img.cont = null;
-        img.globe = globe;
-
-        img.onload = function () {
-            var bitmap = new createjs.Bitmap(img);
-            bitmap.setBounds(0, 0, img.width, img.height);
-            bounds = bitmap.getBounds();
-            var scale = SIZE_RESIZE_AREA / bounds.height;
-            bitmap.scaleX = scale;
-            bitmap.scaleY = scale;
-
-            if (this.cont == null) {
-                this.cont = new createjs.Container();
-                this.cont.name = 'button';
-                var hitArea = new createjs.Shape();
-                hitArea.graphics.beginFill("#000").drawRect(0, 0,
-                    SIZE_RESIZE_AREA, SIZE_RESIZE_AREA);
-                this.cont.width = SIZE_RESIZE_AREA;
-                this.cont.height = SIZE_RESIZE_AREA;
-                this.cont.hitArea = hitArea;
-                this.cont.addChild(hitArea);
-                this.cont.addChild(bitmap);
-                callback(this.globe, this.cont);
-            };
-        };
-        img.src = url;
-        return img;
-    };
-
 
     function StoryViewer(canvas) {
 
@@ -149,11 +101,10 @@ define(function (require) {
             this.stage.update();
         };
 
-
         this.animate = function() {
             createjs.Ticker.setInterval(1000);
             createjs.Ticker.addEventListener("tick", tick);
-            var step = 10;
+            var step = 3;
             var viewer = this;
             function tick() {
                 viewer.showRandomCircles();
@@ -162,7 +113,7 @@ define(function (require) {
                 } else {
                     createjs.Ticker.removeEventListener("tick", tick);
                     // Here we need load all the images and remove the circles
-
+                    viewer.loadImages();
                 };
             };
         };
@@ -206,6 +157,70 @@ define(function (require) {
             };
 
             this.stage.update();
+        };
+
+        this.loadImages = function() {
+            this._imageCounter = 9;
+            // get a list of 9 unique random image names
+            var selectedImages = [];
+            while (selectedImages.length < 9) {
+                var imageName = images[
+                    Math.round(Math.random() * (images.length - 1))];
+                if (selectedImages.indexOf(imageName) == -1) {
+                    selectedImages.push(imageName);
+                };
+            };
+            // add the images to the canvas
+            for (var i=0; i < 3; i++) {
+                for (var j=0; j < 3; j++) {
+                    var x = i * this._tileSize;
+                    var y = j * this._tileSize;
+                    url = './images/' + selectedImages.pop();
+                    this.createAsyncBitmap(url, x, y, null)
+                };
+            };
+        };
+
+        this.showLoadedImages = function() {
+            // show the loaded images when are all loaded
+            if (this._imageCounter > 1) {
+                this._imageCounter = this._imageCounter - 1;
+                return;
+            };
+            this.stage.removeChild(this._animContainer);
+            this._animContainer = null;
+            this._backContainer.cache(0, 0, this.canvas.width, this.canvas.height);
+            this.stage.update();
+        };
+
+        this.createAsyncBitmap = function(url, x, y, callback) {
+            // Async creation of bitmap from SVG data
+            // Works with Chrome, Safari, Firefox (untested on IE)
+            var viewer = this;
+            var img = new Image();
+            img.onload = function () {
+                bitmap = new createjs.Bitmap(img);
+                bitmap.setBounds(0, 0, img.width, img.height);
+                bounds = bitmap.getBounds();
+                var scale = viewer._tileSize / bounds.height;
+                bitmap.scaleX = scale;
+                bitmap.scaleY = scale;
+                bitmap.x = x;
+                bitmap.y = y;
+
+                var hitArea = new createjs.Shape();
+                hitArea.graphics.beginFill("#000").drawRect(0, 0,
+                    img.width, img.height);
+                bitmap.hitArea = hitArea;
+
+                viewer._backContainer.addChild(bitmap);
+                viewer.showLoadedImages();
+                //callback(container, x, y, bitmap);
+            };
+            img.onerror = function (errorMsg, url, lineNumber) {
+                console.log('Error loading ' + url);
+            };
+            img.src = url;
         };
 
         return this;
