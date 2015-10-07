@@ -1,3 +1,49 @@
+// 40 high-chroma colors [value, chroma, RGB]
+// (copied from walter turtleartjs munsell.js)
+COLORS40 = [
+    [6, 24, "#ff007e"],
+    [6, 24, "#ff0066"],
+    [6, 24, "#ff0048"],
+    [6, 26, "#ff0000"],
+    [6, 26, "#ff3000"],
+    [6, 20, "#fd6600"],
+    [8, 24, "#ffa300"],
+    [8, 22, "#ffb000"],
+    [8, 22, "#ffb900"],
+    [8, 22, "#ffc000"],
+    [9, 22, "#ffe400"],
+    [9, 22, "#ffe800"],
+    [9, 22, "#f6ee00"],
+    [9, 22, "#e1f400"],
+    [9, 22, "#c4fb00"],
+    [8, 28, "#4eeb00"],
+    [8, 22, "#00f200"],
+    [8, 28, "#00fd3c"],
+    [6, 28, "#00c260"],
+    [6, 28, "#00c273"],
+    [6, 28, "#00c286"],
+    [6, 28, "#00c29d"],
+    [6, 26, "#00c1b6"],
+    [6, 24, "#00c0ca"],
+    [6, 24, "#00c0e7"],
+    [6, 20, "#00b9f1"],
+    [6, 20, "#00b5ff"],
+    [6, 20, "#00b0ff"],
+    [6, 20, "#00abff"],
+    [6, 18, "#00a1ff"],
+    [4, 28, "#005dff"],
+    [4, 28, "#4231ff"],
+    [4, 28, "#8000fe"],
+    [4, 28, "#a000ef"],
+    [6, 28, "#f009ff"],
+    [6, 28, "#ff00ff"],
+    [6, 28, "#ff00f9"],
+    [6, 28, "#ff00d9"],
+    [6, 26, "#ff00b2"],
+    [6, 24, "#ff0098"]
+];
+
+
 define(function (require) {
 
     require("easel");
@@ -111,11 +157,9 @@ define(function (require) {
             var viewer = this;
             function tick() {
                 viewer.showRandomCircles();
-                console.log(step);
                 if (step > 0) {
                     step = step - 1;
                 } else {
-                    console.log('PAUSE');
                     createjs.Ticker.removeEventListener("tick", tick);
                     // Here we need load all the images and remove the circles
 
@@ -132,18 +176,35 @@ define(function (require) {
             }
 
             this._circles = [];
+            for (var n=0; n < 6; n++) {
+                var i = Math.round(Math.random() * 3);
+                var j = Math.round(Math.random() * 3);
+                var s = new createjs.Shape();
+                var color = COLORS40[
+                    Math.round(Math.random() * (COLORS40.length - 1))][2];
+                s.graphics.beginFill(color);
+                s.graphics.drawCircle((i + 0.5) * this._tileSize,
+                             (j + 0.5) * this._tileSize,
+                             this._tileSize / 2);
+                this._animContainer.addChild(s);
+            };
+
+            var questionMark = new createjs.Text("?", "60px Arial", "#000000");
+            var height = questionMark.getMeasuredHeight();
+            questionMark.scaleX = this._tileSize * 0.75/ height;
+            questionMark.scaleY = this._tileSize * 0.75/ height;
+            questionMark.textAlign = "center";
+            questionMark.textBaseline = "middle";
+
             for (var i=0; i < 3; i++) {
                 for (var j=0; j < 3; j++) {
-                    if (Math.random() > 0.5) {
-                        var s = new createjs.Shape();
-                        s.graphics.beginFill(createjs.Graphics.getRGB(255,0,0));
-                        s.graphics.drawCircle((i + 0.5) * this._tileSize,
-                                     (j + 0.5) * this._tileSize,
-                                     this._tileSize / 2);
-                        this._animContainer.addChild(s);
-                    };
+                    var q = questionMark.clone();
+                    q.x = (i + 0.5) * this._tileSize;
+                    q.y = (j + 0.5) * this._tileSize;
+                    this._animContainer.addChild(q);
                 };
             };
+
             this.stage.update();
         };
 
