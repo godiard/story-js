@@ -107,12 +107,12 @@ define(function (require) {
         this.animate = function() {
             createjs.Ticker.setInterval(1000);
             createjs.Ticker.addEventListener("tick", tick);
-            var step = 3;
+            var step = 5;
             var viewer = this;
             function tick() {
-                viewer.showRandomCircles();
+                step = step - 1;
                 if (step > 0) {
-                    step = step - 1;
+                    viewer.showRandomCircles();
                 } else {
                     createjs.Ticker.removeEventListener("tick", tick);
                     // Here we need load all the images and remove the circles
