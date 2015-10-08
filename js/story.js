@@ -73,6 +73,8 @@ define(function (require) {
 
     var DEFAULT_FONT_SIZE = 14;
 
+    CANT_TILES = 3;
+    MIN_DRAG_DIST = 20;
     story = {};
 
     function StoryViewer(canvas) {
@@ -84,8 +86,9 @@ define(function (require) {
         this.stage = new createjs.Stage(canvas);
         // Enable touch interactions if supported on the current device
         createjs.Touch.enable(this.stage);
-        this._tileSize = this._height / 3;
+        this._tileSize = this._height / CANT_TILES;
         this._animContainer = null;
+        this._tiles = [];
 
         this.init = function () {
             this.stage.removeAllChildren();
@@ -128,8 +131,8 @@ define(function (require) {
 
             this._circles = [];
             for (var n=0; n < 6; n++) {
-                var i = Math.round(Math.random() * 3);
-                var j = Math.round(Math.random() * 3);
+                var i = Math.round(Math.random() * CANT_TILES);
+                var j = Math.round(Math.random() * CANT_TILES);
                 var s = new createjs.Shape();
                 var color = COLORS40[
                     Math.round(Math.random() * (COLORS40.length - 1))][2];
@@ -147,8 +150,8 @@ define(function (require) {
             questionMark.textAlign = "center";
             questionMark.textBaseline = "middle";
 
-            for (var i=0; i < 3; i++) {
-                for (var j=0; j < 3; j++) {
+            for (var i=0; i < CANT_TILES; i++) {
+                for (var j=0; j < CANT_TILES; j++) {
                     var q = questionMark.clone();
                     q.x = (i + 0.5) * this._tileSize;
                     q.y = (j + 0.5) * this._tileSize;
@@ -171,12 +174,13 @@ define(function (require) {
                 };
             };
             // add the images to the canvas
-            for (var i=0; i < 3; i++) {
-                for (var j=0; j < 3; j++) {
-                    var x = i * this._tileSize;
-                    var y = j * this._tileSize;
+            this._tiles = [];
+            for (var i=0; i < CANT_TILES; i++) {
+                this._tiles.push([]);
+                for (var j=0; j < CANT_TILES; j++) {
+                    this._tiles[i].push(null);
                     url = './images/' + selectedImages.pop();
-                    this.createAsyncBitmap(url, x, y, null)
+                    this.createAsyncBitmap(url, i, j, null)
                 };
             };
         };
@@ -193,7 +197,7 @@ define(function (require) {
             this.stage.update();
         };
 
-        this.createAsyncBitmap = function(url, x, y, callback) {
+        this.createAsyncBitmap = function(url, i, j, callback) {
             // Async creation of bitmap from SVG data
             // Works with Chrome, Safari, Firefox (untested on IE)
             var viewer = this;
@@ -205,13 +209,43 @@ define(function (require) {
                 var scale = viewer._tileSize / bounds.height;
                 bitmap.scaleX = scale;
                 bitmap.scaleY = scale;
-                bitmap.x = x;
-                bitmap.y = y;
+                bitmap.x = i * viewer._tileSize;
+                bitmap.y = j * viewer._tileSize;
+                bitmap.i = i;
+                bitmap.j = j;
+                viewer._tiles[i][j] = bitmap;
 
                 var hitArea = new createjs.Shape();
                 hitArea.graphics.beginFill("#000").drawRect(0, 0,
                     img.width, img.height);
                 bitmap.hitArea = hitArea;
+
+                bitmap.on("mousedown",function(event) {
+                    // set the initial mouse down position to calculate later
+                    // the drag direction
+                    bitmap.pressX = event.stageX;
+                    bitmap.pressY = event.stageY;
+                }, bitmap);
+
+                bitmap.on("pressmove",function(event) {
+                    var deltaX = event.stageX - bitmap.pressX;
+                    var deltaY = event.stageY - bitmap.pressY;
+                    if (Math.abs(deltaX) < MIN_DRAG_DIST &&
+                        Math.abs(deltaY) < MIN_DRAG_DIST) {
+                        return;
+                    };
+                    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                        var direction = 'X';
+                        var value = deltaX > 0 ? 1 : -1;
+                    } else {
+                        var direction = 'Y';
+                        var value = deltaY > 0 ? 1 : -1;
+                    };
+
+                    console.log('drag ' + this.i + ' ' + this.j,
+                                'TO ' + direction + ' ' + value);
+                    viewer.dragImage(this, direction, value);
+                }, bitmap);
 
                 viewer._backContainer.addChild(bitmap);
                 viewer.showLoadedImages();
@@ -223,9 +257,30 @@ define(function (require) {
             img.src = url;
         };
 
+        this.dragImage = function(bitmap, direction, value) {
+            // verify if can swith in the requested direction/value
+            var coord = (direction == 'X') ? bitmap.i : bitmap.j;
+            if ((value == -1 && coord == 0) ||
+                (value == 1 && coord == CANT_TILES - 1)) {
+                console.log('Out of limits');
+                return;
+            };
+            // identify the piece to make the swap
+            var i1 = bitmap.i;
+            var j1 = bitmap.j;
+            var i2 = i1;
+            var j2 = j1;
+            if (direction == 'X') {
+                i2 = i1 + value;
+            } else {
+                j2 = j1 + value;
+            };
+            console.log('drag to ' + i2 + ' ' + j2);
+
+        };
+
         return this;
     };
-
 
     story.StoryViewer = StoryViewer;
 
