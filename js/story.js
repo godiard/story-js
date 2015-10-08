@@ -94,13 +94,7 @@ define(function (require) {
         this.init = function () {
             this.stage.removeAllChildren();
             this._backContainer = new createjs.Container();
-            var background = new createjs.Shape();
-            background.graphics.setStrokeStyle(LINE_WIDTH, "round");
-            background.graphics.beginStroke(
-                BLACK).drawRect(LINE_WIDTH, LINE_WIDTH,
-                                this._width, this._height);
-            this.stage.addChild (this._backContainer);
-            this._backContainer.addChild(background);
+            this.stage.addChild(this._backContainer);
             this.stage.update();
         };
 
