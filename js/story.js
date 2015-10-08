@@ -47,6 +47,7 @@ COLORS40 = [
 define(function (require) {
 
     require("easel");
+    require("tween");
     // this is a array with the list of images available
     var images = require('images');
 
@@ -98,9 +99,8 @@ define(function (require) {
             background.graphics.beginStroke(
                 BLACK).drawRect(LINE_WIDTH, LINE_WIDTH,
                                 this._width, this._height);
-            this.stage.addChild(this._backContainer);
+            this.stage.addChild (this._backContainer);
             this._backContainer.addChild(background);
-            this._backContainer.cache(0, 0, this.canvas.width, this.canvas.height);
             this.stage.update();
         };
 
@@ -193,8 +193,10 @@ define(function (require) {
             };
             this.stage.removeChild(this._animContainer);
             this._animContainer = null;
-            this._backContainer.cache(0, 0, this.canvas.width, this.canvas.height);
             this.stage.update();
+            createjs.Ticker.addEventListener("tick", this.stage);
+            // return the ticker to the standard interval to do the drag animation
+            createjs.Ticker.setInterval(50);
         };
 
         this.createAsyncBitmap = function(url, i, j, callback) {
@@ -227,7 +229,7 @@ define(function (require) {
                     bitmap.pressY = event.stageY;
                 }, bitmap);
 
-                bitmap.on("pressmove",function(event) {
+                bitmap.on("pressup",function(event) {
                     var deltaX = event.stageX - bitmap.pressX;
                     var deltaY = event.stageY - bitmap.pressY;
                     if (Math.abs(deltaX) < MIN_DRAG_DIST &&
@@ -275,8 +277,33 @@ define(function (require) {
             } else {
                 j2 = j1 + value;
             };
-            console.log('drag to ' + i2 + ' ' + j2);
 
+            // store the end coordinates
+            var x1 = bitmap.x;
+            var y1 = bitmap.y;
+            var bitmap2 = this._tiles[i2][j2];
+            var x2 = bitmap2.x;
+            var y2 = bitmap2.y;
+
+            createjs.Tween.get(bitmap).to({x:x2,y:y2}, 500,
+                createjs.Ease.linear).call(
+                    this.endDrag(i1, j1, i2, j2)
+                );
+            createjs.Tween.get(bitmap2).to({x:x1,y:y1}, 500,
+                               createjs.Ease.linear);
+        };
+
+        this.endDrag = function(i1, j1, i2, j2){
+            var bitmap1 = this._tiles[i1][j1];
+            var bitmap2 = this._tiles[i2][j2];
+            // swap the values i and j
+            bitmap1.i = i2;
+            bitmap1.j = j2;
+            bitmap2.i = i1;
+            bitmap2.j = j1;
+            // swap the bitmap positions in the matrix
+            this._tiles[i1][j1] = bitmap2;
+            this._tiles[i2][j2] = bitmap1;
         };
 
         return this;
