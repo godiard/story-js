@@ -48,6 +48,7 @@ define(function (require) {
 
     require("easel");
     require("tween");
+    require("canvasToBlob");
     // this is a array with the list of images available
     var images = require('images');
 
@@ -298,6 +299,23 @@ define(function (require) {
             // swap the bitmap positions in the matrix
             this._tiles[i1][j1] = bitmap2;
             this._tiles[i2][j2] = bitmap1;
+        };
+
+        this.saveAsImage = function(callback) {
+            if (callback != null) {
+                this.canvas.toBlob(callback);
+            } else {
+                // use cordova plugin from
+                // https://github.com/devgeeks/Canvas2ImagePlugin
+                window.canvas2ImagePlugin.saveImageDataToLibrary(
+                    function(msg){
+                        console.log(msg);
+                    },
+                    function(err){
+                        console.log(err);
+                    },
+                    this.canvas);
+            };
         };
 
         return this;

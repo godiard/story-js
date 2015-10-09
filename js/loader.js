@@ -15,6 +15,7 @@ requirejs.config({
         localizationData: "../js/localization_data",
         filesaver: "../lib/FileSaver.min",
         persistence: "../js/persistence",
+        canvasToBlob: "../lib/canvas-toBlob",
     }
 });
 

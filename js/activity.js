@@ -145,12 +145,12 @@ define(function (require) {
 
         saveImageButton.addEventListener('click', function(e) {
             if (onAndroid) {
-                toonModel.saveAsImage(this.id, null);
+                story.saveAsImage(null);
                 activity.showAlert(_('ImageSaved'),
                     _('TheImageIsSavedInYourGallery'), null, null);
             } else {
-                toonModel.saveAsImage(this.id, function(blob) {
-                    saveAs(blob, "fototoon.png");
+                story.saveAsImage(function(blob) {
+                    saveAs(blob, "story.png");
                 });
             };
         });
