@@ -168,15 +168,30 @@ define(function (require) {
                     selectedImages.push(imageName);
                 };
             };
-            // add the images to the canvas
+            // create a matrix to store references to the images
             this._tiles = [];
+            // put all the coordintes to be used by the images when loaded
+            this._coords = [];
             for (var i=0; i < CANT_TILES; i++) {
                 this._tiles.push([]);
                 for (var j=0; j < CANT_TILES; j++) {
                     this._tiles[i].push(null);
-                    url = './images/' + selectedImages.pop();
-                    this.createAsyncBitmap(url, i, j, null)
+                    this._coords.push([i, j]);
                 };
+            };
+            // add the images to the canvas
+            for (var n=0; n < (CANT_TILES * CANT_TILES); n++) {
+                var imageName = selectedImages.pop();
+                imageName = imageName.replace('.png', '_png');
+                imageName = imageName.replace('-', '_');
+                imageName = imageName.replace(' ', '_');
+                viewer = this;
+                require([imageName], function (url) {
+                    var coords = viewer._coords.pop();
+                    var _i = coords[0];
+                    var _j = coords[1];
+                    viewer.createBitmap(url, _i, _j, null);
+                });
             };
         };
 
@@ -194,64 +209,57 @@ define(function (require) {
             createjs.Ticker.setInterval(50);
         };
 
-        this.createAsyncBitmap = function(url, i, j, callback) {
-            // Async creation of bitmap from SVG data
-            // Works with Chrome, Safari, Firefox (untested on IE)
-            var viewer = this;
+        this.createBitmap = function(url, i, j, callback) {
             var img = new Image();
-            img.onload = function () {
-                bitmap = new createjs.Bitmap(img);
-                bitmap.setBounds(0, 0, img.width, img.height);
-                bounds = bitmap.getBounds();
-                var scale = viewer._tileSize / bounds.height;
-                bitmap.scaleX = scale;
-                bitmap.scaleY = scale;
-                bitmap.x = i * viewer._tileSize;
-                bitmap.y = j * viewer._tileSize;
-                bitmap.i = i;
-                bitmap.j = j;
-                viewer._tiles[i][j] = bitmap;
-
-                var hitArea = new createjs.Shape();
-                hitArea.graphics.beginFill("#000").drawRect(0, 0,
-                    img.width, img.height);
-                bitmap.hitArea = hitArea;
-
-                bitmap.on("mousedown",function(event) {
-                    // set the initial mouse down position to calculate later
-                    // the drag direction
-                    bitmap.pressX = event.stageX;
-                    bitmap.pressY = event.stageY;
-                }, bitmap);
-
-                bitmap.on("pressup",function(event) {
-                    var deltaX = event.stageX - bitmap.pressX;
-                    var deltaY = event.stageY - bitmap.pressY;
-                    if (Math.abs(deltaX) < MIN_DRAG_DIST &&
-                        Math.abs(deltaY) < MIN_DRAG_DIST) {
-                        return;
-                    };
-                    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                        var direction = 'X';
-                        var value = deltaX > 0 ? 1 : -1;
-                    } else {
-                        var direction = 'Y';
-                        var value = deltaY > 0 ? 1 : -1;
-                    };
-
-                    console.log('drag ' + this.i + ' ' + this.j,
-                                'TO ' + direction + ' ' + value);
-                    viewer.dragImage(this, direction, value);
-                }, bitmap);
-
-                viewer._backContainer.addChild(bitmap);
-                viewer.showLoadedImages();
-                //callback(container, x, y, bitmap);
-            };
-            img.onerror = function (errorMsg, url, lineNumber) {
-                console.log('Error loading ' + url);
-            };
             img.src = url;
+
+            bitmap = new createjs.Bitmap(img);
+            bitmap.setBounds(0, 0, img.width, img.height);
+            bounds = bitmap.getBounds();
+            var scale = this._tileSize / bounds.height;
+            bitmap.scaleX = scale;
+            bitmap.scaleY = scale;
+            bitmap.x = i * this._tileSize;
+            bitmap.y = j * this._tileSize;
+            bitmap.i = i;
+            bitmap.j = j;
+            this._tiles[i][j] = bitmap;
+
+            var hitArea = new createjs.Shape();
+            hitArea.graphics.beginFill("#000").drawRect(0, 0,
+                img.width, img.height);
+            bitmap.hitArea = hitArea;
+
+            bitmap.on("mousedown",function(event) {
+                // set the initial mouse down position to calculate later
+                // the drag direction
+                bitmap.pressX = event.stageX;
+                bitmap.pressY = event.stageY;
+            }, bitmap);
+
+            var viewer = this;
+            bitmap.on("pressup",function(event) {
+                var deltaX = event.stageX - bitmap.pressX;
+                var deltaY = event.stageY - bitmap.pressY;
+                if (Math.abs(deltaX) < MIN_DRAG_DIST &&
+                    Math.abs(deltaY) < MIN_DRAG_DIST) {
+                    return;
+                };
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    var direction = 'X';
+                    var value = deltaX > 0 ? 1 : -1;
+                } else {
+                    var direction = 'Y';
+                    var value = deltaY > 0 ? 1 : -1;
+                };
+
+                console.log('drag ' + this.i + ' ' + this.j,
+                            'TO ' + direction + ' ' + value);
+                viewer.dragImage(this, direction, value);
+            }, bitmap);
+
+            this._backContainer.addChild(bitmap);
+            this.showLoadedImages();
         };
 
         this.dragImage = function(bitmap, direction, value) {
