@@ -18,6 +18,10 @@
   background-image: url(../icons/save-as-image.svg);
 }
 
+#save-as-pdf {
+  background-image: url(../icons/save-as-pdf.svg);
+}
+
 #canvas {
 background-color: #fff;
 background-image:

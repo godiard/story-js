@@ -6,4 +6,15 @@ The app will be configured on Android to be used with the sceen on
 vertical position, to allow display the on screen keyboard, 
 the images and the text editor.
 
+Used libraries:
+* https://github.com/devongovett/pdfkit
+* https://github.com/devongovett/blob-stream
+* https://github.com/feross/buffer
 
+DONE
+* Save as image
+* Save as PDF
+
+TODO:
+* Test in tablet and resize as needed.
+* Record Audio

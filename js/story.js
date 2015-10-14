@@ -49,6 +49,10 @@ define(function (require) {
     require("easel");
     require("tween");
     require("canvasToBlob");
+    var Buffer = require('buffer').Buffer;
+    var PDFDocument = require("pdfkit");
+    var blobStream = require("blobstream");
+
     // this is a array with the list of images available
     var images = require('images');
 
@@ -324,6 +328,41 @@ define(function (require) {
                     },
                     this.canvas);
             };
+        };
+
+        this.saveAsPdf = function(text, callback) {
+
+            var canvasData = this.canvas.toDataURL();
+            var image = new Buffer(
+                canvasData.replace('data:image/png;base64,',''), 'base64');
+
+            var doc = new PDFDocument({size: 'A4'});
+
+            // page size A4: 8.3 x 11.7 inches
+            // pdf sizes are in 72 points by inch
+            // is 597 x 842
+            var pageWidth = 597;
+            var imageWidth = 500;
+            var margin = (pageWidth - imageWidth) / 2;
+
+            var stream = doc.pipe(blobStream());
+
+            doc.image(image, margin, margin, {width: imageWidth});
+
+            // draw some text
+            doc.fontSize(25).text(text, margin, imageWidth + margin * 2, {
+                 width: imageWidth,
+                 align: 'justify'});
+            doc.end();
+
+            stream.on('finish', function() {
+                if (callback != null) {
+                    var blob = stream.toBlob('application/pdf');
+                    callback(blob);
+                } else {
+                    // TODO
+                };
+            });
         };
 
         return this;

@@ -16,6 +16,9 @@ requirejs.config({
         filesaver: "../lib/FileSaver.min",
         persistence: "../js/persistence",
         canvasToBlob: "../lib/canvas-toBlob",
+        pdfkit: "../lib/pdfkit",
+        blobstream: "../lib/blob-stream",
+        buffer: "../lib/buffer",
         // images
         accountant_png: "../images/accountant.png",
         ache_png: "../images/ache.png",
