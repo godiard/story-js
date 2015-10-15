@@ -159,15 +159,9 @@ define(function (require) {
         var savePdfButton = document.getElementById("save-as-pdf");
 
         savePdfButton.addEventListener('click', function(e) {
-
-            if (onAndroid) {
-                // TODO
-
-            } else {
-                story.saveAsPdf(textEditor.value ,function(blob) {
-                    saveAs(blob, "story.pdf");
-                });
-            };
+            story.saveAsPdf(textEditor.value ,function(blob) {
+                saveAs(blob, "story.pdf");
+            });
         });
 
     });

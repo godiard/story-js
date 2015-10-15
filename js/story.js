@@ -356,12 +356,8 @@ define(function (require) {
             doc.end();
 
             stream.on('finish', function() {
-                if (callback != null) {
-                    var blob = stream.toBlob('application/pdf');
-                    callback(blob);
-                } else {
-                    // TODO
-                };
+                var blob = stream.toBlob('application/pdf');
+                callback(blob);
             });
         };
 
