@@ -73,7 +73,7 @@ define(function (require) {
     var smallScreen = (window.innerWidth < 700) || (window.innerHeight < 600);
     var font = smallScreen ? "16px Arial" : "24px Arial";
 
-    var LINE_WIDTH = 1;
+    var LINE_WIDTH = 2;
     var BLACK = "#000000";
     var WHITE = "#ffffff";
 
@@ -129,16 +129,16 @@ define(function (require) {
             }
 
             this._circles = [];
-            for (var n=0; n < 6; n++) {
-                var i = Math.round(Math.random() * CANT_TILES);
-                var j = Math.round(Math.random() * CANT_TILES);
+            for (var n=0; n < 5; n++) {
+                var i = Math.round(Math.random() * (CANT_TILES - 1));
+                var j = Math.round(Math.random() * (CANT_TILES - 1));
                 var s = new createjs.Shape();
                 var color = COLORS40[
                     Math.round(Math.random() * (COLORS40.length - 1))][2];
                 s.graphics.beginFill(color);
-                s.graphics.drawCircle((i + 0.5) * this._tileSize,
-                             (j + 0.5) * this._tileSize,
-                             this._tileSize / 2);
+                var x = (i + 0.5) * this._tileSize + LINE_WIDTH;
+                var y = (j + 0.5) * this._tileSize + LINE_WIDTH;
+                s.graphics.drawCircle(x, y, this._tileSize / 2);
                 this._animContainer.addChild(s);
             };
 
@@ -152,8 +152,8 @@ define(function (require) {
             for (var i=0; i < CANT_TILES; i++) {
                 for (var j=0; j < CANT_TILES; j++) {
                     var q = questionMark.clone();
-                    q.x = (i + 0.5) * this._tileSize;
-                    q.y = (j + 0.5) * this._tileSize;
+                    q.x = (i + 0.5) * this._tileSize + LINE_WIDTH;
+                    q.y = (j + 0.5) * this._tileSize + LINE_WIDTH;
                     this._animContainer.addChild(q);
                 };
             };
