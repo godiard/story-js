@@ -186,6 +186,9 @@ define(function (require) {
             // add the images to the canvas
             for (var n=0; n < (CANT_TILES * CANT_TILES); n++) {
                 var imageName = selectedImages.pop();
+                // add the image name to the coords array to use it
+                // as data for the bitmap
+                this._coords[n].push(imageName.replace('.png', ''));
                 imageName = imageName.replace('.png', '_png');
                 imageName = imageName.replace('-', '_');
                 imageName = imageName.replace(' ', '_');
@@ -194,7 +197,8 @@ define(function (require) {
                     var coords = viewer._coords.pop();
                     var _i = coords[0];
                     var _j = coords[1];
-                    viewer.createBitmap(url, _i, _j, null);
+                    var _imageName = coords[2];
+                    viewer.createBitmap(url, _i, _j, _imageName);
                 });
             };
         };
@@ -213,7 +217,7 @@ define(function (require) {
             createjs.Ticker.setInterval(50);
         };
 
-        this.createBitmap = function(url, i, j, callback) {
+        this.createBitmap = function(url, i, j, imageName) {
             var img = new Image();
             img.src = url;
 
@@ -227,6 +231,7 @@ define(function (require) {
             bitmap.y = j * this._tileSize;
             bitmap.i = i;
             bitmap.j = j;
+            bitmap.imageName = imageName;
             this._tiles[i][j] = bitmap;
 
             var hitArea = new createjs.Shape();
@@ -328,6 +333,16 @@ define(function (require) {
                     },
                     this.canvas);
             };
+        };
+
+        this.getImageNames = function() {
+            var names = '';
+            for (var i=0; i < CANT_TILES; i++) {
+                for (var j=0; j < CANT_TILES; j++) {
+                    names = names + this._tiles[i][j].imageName + '-';
+                };
+            };
+            return names.substr(0, names.length -1);
         };
 
         this.saveAsPdf = function(text, callback) {

@@ -157,13 +157,6 @@ define(function (require) {
             };
         });
 
-        function getDate() {
-            var date = new Date();
-            return date.getDate() + '-' + date.getMonth() + '-' +
-                date.getYear() + '-' + date.getHours() + date.getMinutes() +
-                date.getSeconds();
-        };
-
         var savePdfButton = document.getElementById("save-as-pdf");
 
         savePdfButton.addEventListener('click', function(e) {
@@ -172,7 +165,7 @@ define(function (require) {
 
             story.saveAsPdf(textEditor.value ,function(blob) {
                 if (onAndroid) {
-                    var fileName = "story_" + getDate() + ".pdf"
+                    var fileName = "story_" + story.getImageNames() + ".pdf";
                     cordobaIO.save(blob, fileName);
                     window.plugins.fileOpener.open(
                         cordova.file.externalApplicationStorageDirectory +
