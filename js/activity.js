@@ -60,15 +60,17 @@ define(function (require) {
 
         var textEditor = document.getElementById("textEditor");
         textEditor.style.width = (window.innerWidth - sugarCellSize * 2) + 'px' ;
-        textEditor.style.height = "90px";
+        textEditor.style.height = "160px";
         textEditor.style.left = sugarCellSize + "px";
         textEditor.style.top = "15px";
+        textEditor.style.display = 'block';
 
         var mainCanvas = document.getElementById("mainCanvas");
-        mainCanvas.width = window.innerWidth - sugarCellSize * 2;
-        mainCanvas.height = window.innerWidth - sugarCellSize * 2;
-        mainCanvas.style.left = sugarCellSize + "px";
-        mainCanvas.style.top = "120px";
+        mainCanvas.width = window.innerWidth - sugarCellSize * 4;
+        mainCanvas.height = window.innerWidth - sugarCellSize * 4;
+        mainCanvas.style.left = (sugarCellSize * 2) + "px";
+        mainCanvas.style.top = "185px";
+        mainCanvas.style.display = 'block';
 
         var storyViewer = story.StoryViewer(mainCanvas);
         storyViewer.init();

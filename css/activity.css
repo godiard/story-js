@@ -42,8 +42,9 @@ background-size: 100% 1.2em;
 #textEditor {
   position: absolute;
   resize: none;
-  font-size: 20px;
+  font-size: 24pt;
   MARGIN: 0px;
+  display: none;
 }
 
 /* This probably should be upstream (sugar-web, I don't know why
@@ -92,4 +93,10 @@ background-size: 100% 1.2em;
 #file-selector button:hover {
   background-color: transparent;
   border-color: transparent;
+}
+
+/* For the button in the alert */
+
+button {
+  font-size: 18pt;
 }
