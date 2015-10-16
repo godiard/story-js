@@ -14,7 +14,8 @@ Used libraries:
 DONE
 * Save as image
 * Save as PDF
+* Test in tablet and resize as needed.
+* Open PDF in Android
 
 TODO:
-* Test in tablet and resize as needed.
 * Record Audio

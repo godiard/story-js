@@ -157,12 +157,30 @@ define(function (require) {
             };
         });
 
+        function getDate() {
+            var date = new Date();
+            return date.getDate() + '-' + date.getMonth() + '-' +
+                date.getYear() + '-' + date.getHours() + date.getMinutes() +
+                date.getSeconds();
+        };
 
         var savePdfButton = document.getElementById("save-as-pdf");
 
         savePdfButton.addEventListener('click', function(e) {
+            activity.showAlert(_('SavingPDF'),
+                _('CreatingPDFFIle'), null, null);
+
             story.saveAsPdf(textEditor.value ,function(blob) {
-                saveAs(blob, "story.pdf");
+                if (onAndroid) {
+                    var fileName = "story_" + getDate() + ".pdf"
+                    cordobaIO.save(blob, fileName);
+                    window.plugins.fileOpener.open(
+                        cordova.file.externalApplicationStorageDirectory +
+                        fileName);
+                } else {
+                    saveAs(blob, "story.pdf");
+                };
+
             });
         });
 
