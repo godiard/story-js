@@ -73,6 +73,9 @@ define(function (require) {
         mainCanvas.style.top = "185px";
         mainCanvas.style.display = 'block';
 
+        var help = document.getElementById("help");
+        help.innerHTML = _('DragImages');
+
         var storyViewer = story.StoryViewer(mainCanvas);
         storyViewer.init();
         storyViewer.animate();

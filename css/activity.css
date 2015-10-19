@@ -100,3 +100,12 @@ background-size: 100% 1.2em;
 button {
   font-size: 18pt;
 }
+
+#help {
+  position: absolute;
+  bottom: 0px;
+  font-size: 24pt;
+  margin: 20px;
+  color: #cccccc;
+  text-align: center;
+}

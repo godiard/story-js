@@ -9,7 +9,8 @@ uiStrings = {
 'FileNotFound': 'File not found',
 'SavingPDF': 'Saving PDF file',
 'CreatingPDFFIle': 'Creating a PDF file with your Story',
-'WriteHere': 'Write your Story here...'},
+'WriteHere': 'Write your Story here...',
+'DragImages': 'You can change the order in the images with a little swipe'},
 
 'es': {
 'SaveAsImage': 'Grabar como imagen',
@@ -19,7 +20,8 @@ uiStrings = {
 'FileNotFound': 'No se encontraron archivos',
 'SavingPDF': 'Grabando archivo PDF',
 'CreatingPDFFIle': 'Creando un PDF con tu Relato',
-'WriteHere': 'Escribe tu relato aqui...'}
+'WriteHere': 'Escribe tu relato aqui...',
+'DragImages': 'Puedes cambiar el orden de las imágenes deslizando'}
 };
 
     return uiStrings;
