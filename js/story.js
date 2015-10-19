@@ -95,6 +95,8 @@ define(function (require) {
         this._tileSize = this._height / CANT_TILES;
         this._animContainer = null;
         this._tiles = [];
+        this.saveAsImageBtn = null;
+        this.saveAsPdfBtn = null;
 
         this.init = function () {
             this.stage.removeAllChildren();
@@ -104,6 +106,12 @@ define(function (require) {
         };
 
         this.animate = function() {
+            if (this.saveAsImageBtn != null) {
+                this.saveAsImageBtn.disabled = true;
+            };
+            if (this.saveAsPdfBtn != null) {
+                this.saveAsPdfBtn.disabled = true;
+            };
             createjs.Ticker.setInterval(1000);
             createjs.Ticker.addEventListener("tick", tick);
             var step = 5;
@@ -215,6 +223,12 @@ define(function (require) {
             createjs.Ticker.addEventListener("tick", this.stage);
             // return the ticker to the standard interval to do the drag animation
             createjs.Ticker.setInterval(50);
+            if (this.saveAsImageBtn != null) {
+                this.saveAsImageBtn.disabled = false;
+            };
+            if (this.saveAsPdfBtn != null) {
+                this.saveAsPdfBtn.disabled = false;
+            };
         };
 
         this.createBitmap = function(url, i, j, imageName) {
