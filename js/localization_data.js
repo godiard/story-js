@@ -8,7 +8,8 @@ uiStrings = {
 'FileSavedSuccessfully': 'The file was saved successfully.',
 'FileNotFound': 'File not found',
 'SavingPDF': 'Saving PDF file',
-'CreatingPDFFIle': 'Creating a PDF file with your Story'},
+'CreatingPDFFIle': 'Creating a PDF file with your Story',
+'WriteHere': 'Write your Story here...'},
 
 'es': {
 'SaveAsImage': 'Grabar como imagen',
@@ -17,7 +18,8 @@ uiStrings = {
 'FileSavedSuccessfully': 'El archivo fue grabado con éxito.',
 'FileNotFound': 'No se encontraron archivos',
 'SavingPDF': 'Grabando archivo PDF',
-'CreatingPDFFIle': 'Creando un PDF con tu Relato'}
+'CreatingPDFFIle': 'Creando un PDF con tu Relato',
+'WriteHere': 'Escribe tu relato aqui...'}
 };
 
     return uiStrings;

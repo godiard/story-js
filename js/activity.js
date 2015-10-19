@@ -64,6 +64,7 @@ define(function (require) {
         textEditor.style.left = sugarCellSize + "px";
         textEditor.style.top = "15px";
         textEditor.style.display = 'block';
+        textEditor.placeholder = _('WriteHere');
 
         var mainCanvas = document.getElementById("mainCanvas");
         mainCanvas.width = window.innerWidth - sugarCellSize * 4;
