@@ -102,10 +102,11 @@ button {
 }
 
 #help {
-  position: absolute;
+  position: fixed;
   bottom: 0px;
   font-size: 24pt;
   margin: 20px;
   color: #cccccc;
   text-align: center;
+  width: 100%;
 }
