@@ -191,6 +191,7 @@ define(function (require) {
 
         storyViewer.saveAsImageBtn = saveImageButton;
         storyViewer.saveAsPdfBtn = savePdfButton;
+        storyViewer.playAudioBtn = playAudioButton;
 
         recordButton.addEventListener('click', function(e) {
             if (! recording) {

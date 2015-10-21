@@ -97,6 +97,9 @@ define(function (require) {
         this._tiles = [];
         this.saveAsImageBtn = null;
         this.saveAsPdfBtn = null;
+        // we need disable the play button if a piece is dragged
+        // because the file name changes
+        this.playAudioBtn = null;
 
         this.init = function () {
             this.stage.removeAllChildren();
@@ -317,6 +320,10 @@ define(function (require) {
                 );
             createjs.Tween.get(bitmap2).to({x:x1,y:y1}, 500,
                                createjs.Ease.linear);
+            // disable the play audio btn
+            if (this.playAudioBtn != null) {
+                this.playAudioBtn.disabled = true;
+            };
         };
 
         this.endDrag = function(i1, j1, i2, j2){
