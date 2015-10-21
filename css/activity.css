@@ -22,6 +22,18 @@
   background-image: url(../icons/save-as-pdf.svg);
 }
 
+#record {
+  background-image: url(../icons/media-record.svg);
+}
+
+#record:active, #record.active {
+  background-image: url(../icons/media-record-active.svg);
+}
+
+#play-audio {
+  background-image: url(../icons/media-playback-start.svg);
+}
+
 #canvas {
 background-color: #fff;
 background-image:

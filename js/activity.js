@@ -41,6 +41,9 @@ define(function (require) {
         // Initialize the activity.
         activity.setup();
 
+        var recordButton = document.getElementById("record");
+        var playAudioButton = document.getElementById("play-audio");
+
         if (onAndroid) {
             // hide activity and close buttons on android
             var activityButton = document.getElementById("activity-button");
@@ -49,6 +52,9 @@ define(function (require) {
             activityButton.style.display = 'none';
             stopButton.style.display = 'none';
             firstSeparator.style.display = 'none';
+        } else {
+            recordButton.style.display = 'none';
+            playAudioButton.style.display = 'none';
         };
 
         // HERE GO YOUR CODE
@@ -57,6 +63,8 @@ define(function (require) {
         require("filesaver");
         require("persistence");
         var cordobaIO = new persistence.CordobaIO();
+
+        var recording = false;
 
         var textEditor = document.getElementById("textEditor");
         textEditor.style.width = (window.innerWidth - sugarCellSize * 2) + 'px' ;
@@ -183,6 +191,23 @@ define(function (require) {
 
         storyViewer.saveAsImageBtn = saveImageButton;
         storyViewer.saveAsPdfBtn = savePdfButton;
+
+        recordButton.addEventListener('click', function(e) {
+            if (! recording) {
+                // TODO start record
+            } else {
+                // TODO stop record
+
+                playAudioButton.disabled = false;
+            };
+            recordButton.classList.toggle('active');
+            recording = ! recording;
+        });
+
+        playAudioButton.addEventListener('click', function(e) {
+            console.log('Play audio');
+            // TODO start play
+        });
 
     });
 
