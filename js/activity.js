@@ -63,7 +63,6 @@ define(function (require) {
         require("filesaver");
         require("persistence");
         var cordobaIO = new persistence.CordobaIO();
-
         var recording = false;
 
         var textEditor = document.getElementById("textEditor");
@@ -195,8 +194,14 @@ define(function (require) {
         recordButton.addEventListener('click', function(e) {
             if (! recording) {
                 // TODO start record
+                if (!audioRecorder)
+                    return;
+                audioRecorder.clear();
+                audioRecorder.record();
             } else {
                 // TODO stop record
+                audioRecorder.stop();
+                audioRecorder.getBuffers( gotBuffers );
 
                 playAudioButton.disabled = false;
             };
@@ -208,6 +213,64 @@ define(function (require) {
             console.log('Play audio');
             // TODO start play
         });
+
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+        var audioContext = new AudioContext();
+        var audioInput = null,
+            realAudioInput = null,
+            inputPoint = null,
+            audioRecorder = null;
+        var recIndex = 0;
+
+        function gotBuffers(buffers) {
+            // so here's where we should set up the download.
+            audioRecorder.exportWAV( doneEncoding );
+        };
+
+        function doneEncoding(blob) {
+            var fileName = "story_" + story.getImageNames() + ".wav";
+            cordobaIO.save(blob, fileName);
+        };
+
+        function gotStream(stream) {
+            inputPoint = audioContext.createGain();
+
+            // Create an AudioNode from the stream.
+            realAudioInput = audioContext.createMediaStreamSource(stream);
+            audioInput = realAudioInput;
+            audioInput.connect(inputPoint);
+
+            audioRecorder = new Recorder( inputPoint );
+
+            zeroGain = audioContext.createGain();
+            zeroGain.gain.value = 0.0;
+            inputPoint.connect( zeroGain );
+            zeroGain.connect( audioContext.destination );
+        };
+
+        function initAudio() {
+            if (!navigator.getUserMedia)
+                navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+            navigator.getUserMedia(
+            {
+                "audio": {
+                    "mandatory": {
+                        "googEchoCancellation": "false",
+                        "googAutoGainControl": "false",
+                        "googNoiseSuppression": "false",
+                        "googHighpassFilter": "false"
+                    },
+                    "optional": []
+                },
+            }, gotStream, function(e) {
+                alert('Error getting audio');
+                console.log(e);
+            });
+        };
+
+        initAudio();
 
     });
 
