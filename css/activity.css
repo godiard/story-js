@@ -2,6 +2,10 @@
   background-image: url(../activity/activity-story.svg);
 }
 
+#stop-button {
+  display:none;
+}
+
 #reload {
   background-image: url(../icons/view-refresh.svg);
 }

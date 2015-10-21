@@ -45,14 +45,15 @@ define(function (require) {
         var playAudioButton = document.getElementById("play-audio");
 
         if (onAndroid) {
-            // hide activity and close buttons on android
+            // hide activity button on android
             var activityButton = document.getElementById("activity-button");
-            var stopButton = document.getElementById("stop-button");
             var firstSeparator = document.getElementById("first-separator");
             activityButton.style.display = 'none';
-            stopButton.style.display = 'none';
             firstSeparator.style.display = 'none';
         } else {
+            var stopButton = document.getElementById("stop-button");
+            stopButton.style.display = 'block';
+            // hide audio buttons
             recordButton.style.display = 'none';
             playAudioButton.style.display = 'none';
         };
