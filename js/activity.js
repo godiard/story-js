@@ -210,8 +210,11 @@ define(function (require) {
         });
 
         playAudioButton.addEventListener('click', function(e) {
-            console.log('Play audio');
-            // TODO start play
+            var fileName = cordova.file.externalApplicationStorageDirectory +
+                "story_" + story.getImageNames() + ".wav";
+            console.log('Play audio ' + fileName);
+            var audio = new Audio(fileName);
+            audio.play();
         });
 
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
