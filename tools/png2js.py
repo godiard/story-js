@@ -1,7 +1,7 @@
 import os
 import base64
 
-images_path = '../story-js/images/'
+images_path = '../images/'
 
 for filename in os.listdir(images_path):
     image_file_name = os.path.join(images_path, filename)
