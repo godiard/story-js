@@ -26,6 +26,10 @@
   background-image: url(../icons/save-as-pdf.svg);
 }
 
+#audio-button {
+  background-image: url(../icons/audio-no.svg);
+}
+
 #record {
   background-image: url(../icons/media-record.svg);
 }

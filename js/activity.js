@@ -41,8 +41,13 @@ define(function (require) {
         // Initialize the activity.
         activity.setup();
 
+        var audioButton = document.getElementById("audio-button");
         var recordButton = document.getElementById("record");
         var playAudioButton = document.getElementById("play-audio");
+
+        var backgroundMusic = document.getElementById("background-music");
+        backgroundMusic.volume = 0.7;
+        var audioEnabled = false;
 
         if (onAndroid) {
             // hide activity button on android
@@ -59,6 +64,10 @@ define(function (require) {
         };
 
         // HERE GO YOUR CODE
+
+        audioButton.addEventListener('click', function (e) {
+            enableAudio(!audioEnabled);
+        });
 
         require("story");
         require("filesaver");
@@ -93,6 +102,17 @@ define(function (require) {
             storyViewer.init();
             storyViewer.animate();
         });
+
+        function enableAudio(enable) {
+            audioEnabled = enable;
+            if (enable) {
+                backgroundMusic.play();
+                audioButton.style.backgroundImage = "url(./icons/audio.svg)";
+            } else {
+                backgroundMusic.pause();
+                audioButton.style.backgroundImage = "url(./icons/audio-no.svg)";
+            };
+        };
 
         // load images
         var imageChooser = document.getElementById('image-loader');
@@ -198,6 +218,7 @@ define(function (require) {
                 // TODO start record
                 if (!audioRecorder)
                     return;
+                enableAudio(false);
                 audioRecorder.clear();
                 audioRecorder.record();
             } else {
@@ -278,5 +299,18 @@ define(function (require) {
         initAudio();
 
     });
+
+    document.addEventListener("deviceready", function () {
+        console.log('deviceready EVENT');
+        document.addEventListener("pause", function () {
+            console.log('PAUSE EVENT');
+            document.getElementById("background-music").pause();
+        }, false);
+
+        document.addEventListener("resume", function () {
+            console.log('RESUME EVENT');
+            document.getElementById("background-music").resume();
+        }, false);
+    }, false);
 
 });
