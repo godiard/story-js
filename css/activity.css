@@ -42,6 +42,10 @@
   background-image: url(../icons/media-playback-start.svg);
 }
 
+#help-button {
+  background-image: url(../icons/toolbar-help.svg);
+}
+
 #canvas {
 background-color: #fff;
 background-image:
@@ -121,12 +125,38 @@ button {
   font-size: 18pt;
 }
 
-#help {
+#help-display {
+  background-color: white;
+  border: solid 3px #f3cb20;
+  border-radius: 10px;
   position: fixed;
-  bottom: 0px;
-  font-size: 24pt;
-  margin: 20px;
-  color: #cccccc;
-  text-align: center;
-  width: 100%;
+  width: 80%;
+  height: 70%;
+  font: 2em sans-serif;
+  color: #03a9f4;
+  text-align:center;
+  padding: 10px;
+  margin-left: 10%;
+  top: 15%;
+  z-index: 10;
+  overflow-y:auto;
+}
+
+#help-display p {
+  margin: 15px;
+}
+
+.help-icons {
+  width: 30px;
+  vertical-align: middle;
+  background: black;
+  border-radius: 5px;
+  border: solid black 2px;
+}
+
+.developers-icon {
+  width: 50px;
+  vertical-align: middle;
+  background-color: #009EE3;
+  border-radius: 5px;
 }

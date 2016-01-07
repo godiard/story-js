@@ -46,6 +46,9 @@
       </button>
       <button class="toolbutton" id="play-audio" title="Play" disabled>
       </button>
+      <hr id="last-separator"/>
+      <button class="toolbutton" id="help-button" title="Help">
+      </button>
 
       <button class="toolbutton pull-right" id="stop-button" title="Stop"></button>
     </div>
@@ -53,10 +56,33 @@
       <textarea id='textEditor'></textarea>
       <canvas id="mainCanvas" width=1px height=1px>
       </canvas>
-      <div id="help"></div>
       <div id="file-selector" style="display: none">
       </div>
     </div>
+
+    <div id="help-display" style="display:none">
+        <div id="help-content">
+        <p>Relatar te invita a escribir una historia basada en las imágenes que se muestran.</p>
+        <p>Se mostrará el teclado en tu tableta cuando toques el recuadro superior</p>
+        <p>Puedes cambiar todas las imágenes presionando el botón 
+        <img src="icons/view-refresh.svg" class="help-icons"/></p>
+        <p>también puedes cambiar el orden de las imágenes deslizándolas.</p>
+        <p>El botón <img src="icons/save-as-image.svg" class="help-icons"/> graba una imagen para ser usada en otras aplicaciones, y el boton  <img src="icons/save-as-pdf.svg" class="help-icons"/> graba un archivo PDF con tu historia y la imagen.</p>
+        <p>El boton de audio <img src="icons/audio.svg" class="help-icons"/> prende y apaga la música de fondo.</p>
+        <p>Puedes grabar tu voz contando una historia presionando el boton <img src="icons/media-record.svg" class="help-icons"/>. El botón se pondrá de color rojo mientras estes grabando, presiona otra vez para finalizar la grabación. Luego puedes escuchar tu historia presionando el botón <img src="icons/media-playback-start.svg" class="help-icons"/>.
+        <p>Si quieres saber más acerca de quienes hicieron esta aplicación, presiona aqui: <img id="about-button" src="icons/programmer.svg" class="developers-icon"/></p>
+
+        </div>
+        <div id="about-content" style="display:none">
+           <ul>
+                <li>Esta aplicación es una adaptación de la versión Sugar, que fue escrita y es mantenida por Walter Bender e Ignacio Rodríguez. Fué inspirado en parte por Claudia Urrea.</li>
+                <li><b>Música:</b> Interpretación de Jon Sayles de una obra de anónima llamada "La danza de las brujas".
+                Si quieres escuchar más de este tipo de música, puedes ir a http://www.jsayles.com/familypages/earlymusic.htm</li>
+                <li><b>Programación:</b> Gonzalo Odiard de http://www.trinom.io/educacion, para OLPC Inc.</li>
+           </ul>
+        </div>
+    </div>
+
     <div style="display:none">
         <audio loop id="background-music">
           <source src="./music/Anonymous-The-Witches-Dance.mp3" type="audio/mpeg">

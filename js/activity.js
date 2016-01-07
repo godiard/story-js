@@ -57,10 +57,12 @@ define(function (require) {
             firstSeparator.style.display = 'none';
         } else {
             var stopButton = document.getElementById("stop-button");
+            var lastSeparator = document.getElementById("last-separator");
             stopButton.style.display = 'block';
             // hide audio buttons
             recordButton.style.display = 'none';
             playAudioButton.style.display = 'none';
+            lastSeparator.style.display = 'none';
         };
 
         // HERE GO YOUR CODE
@@ -90,9 +92,6 @@ define(function (require) {
         mainCanvas.style.top = "185px";
         mainCanvas.style.display = 'block';
 
-        var help = document.getElementById("help");
-        help.innerHTML = _('DragImages');
-
         var storyViewer = story.StoryViewer(mainCanvas);
         storyViewer.init();
         storyViewer.animate();
@@ -101,6 +100,27 @@ define(function (require) {
         reloadBtn.addEventListener('click', function(e) {
             storyViewer.init();
             storyViewer.animate();
+        });
+
+        var helpButton = document.getElementById("help-button");
+        var helpDisplay = document.getElementById("help-display");
+        var helpContent = document.getElementById("help-content");
+        var aboutButton = document.getElementById("about-button");
+        var aboutContent = document.getElementById("about-content");
+
+        helpButton.addEventListener('click', function (e) {
+            if (helpDisplay.style.display == 'block') {
+                helpDisplay.style.display = 'none';
+            } else {
+                helpContent.style.display = 'block';
+                aboutContent.style.display = 'none';
+                helpDisplay.style.display = 'block';
+            };
+        });
+
+        aboutButton.addEventListener('click', function (e) {
+            helpContent.style.display = 'none';
+            aboutContent.style.display = 'block';
         });
 
         function enableAudio(enable) {
