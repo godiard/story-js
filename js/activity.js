@@ -35,6 +35,8 @@ define(function (require) {
         return translation;
     };
 
+    var audioEnabled = false;
+
     // Manipulate the DOM only when it is ready.
     require(['domReady!'], function (doc) {
 
@@ -46,8 +48,6 @@ define(function (require) {
         var playAudioButton = document.getElementById("play-audio");
 
         var backgroundMusic = document.getElementById("background-music");
-        backgroundMusic.volume = 0.7;
-        var audioEnabled = false;
 
         if (onAndroid) {
             // hide activity button on android
@@ -329,12 +329,16 @@ define(function (require) {
         console.log('deviceready EVENT');
         document.addEventListener("pause", function () {
             console.log('PAUSE EVENT');
-            document.getElementById("background-music").pause();
+            if (audioEnabled) {
+                document.getElementById("background-music").pause();
+            };
         }, false);
 
         document.addEventListener("resume", function () {
             console.log('RESUME EVENT');
-            document.getElementById("background-music").resume();
+            if (audioEnabled) {
+                document.getElementById("background-music").play();
+            };
         }, false);
     }, false);
 
