@@ -86,9 +86,14 @@ define(function (require) {
         textEditor.placeholder = _('WriteHere');
 
         var mainCanvas = document.getElementById("mainCanvas");
-        mainCanvas.width = window.innerWidth - sugarCellSize * 4;
-        mainCanvas.height = window.innerWidth - sugarCellSize * 4;
-        mainCanvas.style.left = (sugarCellSize * 2) + "px";
+        var canvasSize = window.innerWidth - sugarCellSize * 4;
+        var canvasTop = 185;
+        if (canvasSize + canvasTop > window.innerHeight) {
+            canvasSize = window.innerHeight - 185 - sugarCellSize;
+        }
+        mainCanvas.width = canvasSize;
+        mainCanvas.height = canvasSize;
+        mainCanvas.style.left = ((window.innerWidth - canvasSize) / 2) + "px";
         mainCanvas.style.top = "185px";
         mainCanvas.style.display = 'block';
 
