@@ -200,11 +200,10 @@ define(function (require) {
                 // add the image name to the coords array to use it
                 // as data for the bitmap
                 this._coords[n].push(imageName.replace('.png', ''));
-                imageName = imageName.replace('.png', '_png');
                 imageName = imageName.replace('-', '_');
                 imageName = imageName.replace(' ', '_');
                 viewer = this;
-                require([imageName], function (url) {
+                require(['images_path/' + imageName], function (url) {
                     var coords = viewer._coords.pop();
                     var _i = coords[0];
                     var _j = coords[1];
