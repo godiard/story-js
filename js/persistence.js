@@ -46,7 +46,7 @@ define(function (require) {
 
             function onFsResolved(fs) {
                 window.resolveLocalFileSystemURL(
-                    cordova.file.externalApplicationStorageDirectory,
+                    "file:///sdcard/ceibal/Mis Descargas/",
                     onDirResolved, errorHandler);
             };
 

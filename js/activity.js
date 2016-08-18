@@ -224,9 +224,6 @@ define(function (require) {
                 if (onAndroid) {
                     var fileName = "story_" + story.getImageNames() + ".pdf";
                     cordobaIO.save(blob, fileName);
-                    window.plugins.fileOpener.open(
-                        cordova.file.externalApplicationStorageDirectory +
-                        fileName);
                 } else {
                     saveAs(blob, "story.pdf");
                 };
