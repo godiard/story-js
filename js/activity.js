@@ -2,15 +2,15 @@ define(function (require) {
     var activity = require("sugar-web/activity/activity");
 
     // initialize canvas size
+    console.log(navigator.userAgent);
     var onAndroid = /Android/i.test(navigator.userAgent);
     if (window.location.search.indexOf('onAndroid') > -1) {
         onAndroid = true;
     };
 
-    var loadTestData = false;
-    if (window.location.search.indexOf('loadTestData') > -1) {
-        loadTestData = true;
-    };
+    // check if old Android version. Tablets with Android 4.2.2
+    // in Ceibal can't record Audio with acceptable quality
+    var onAndroid4 = /Android 4/i.test(navigator.userAgent);
 
     var onXo = ((window.innerWidth == 1200) && (window.innerHeight >= 900));
     var sugarCellSize = 75;
@@ -53,11 +53,18 @@ define(function (require) {
             // hide activity button on android
             var activityButton = document.getElementById("activity-button");
             var firstSeparator = document.getElementById("first-separator");
+            var lastSeparator = document.getElementById("last-separator");
             activityButton.style.display = 'none';
             firstSeparator.style.display = 'none';
+            if (onAndroid4) {
+                // hide audio buttons laptops with Android 4.2.2
+                // from Ceibal can't record audio
+                recordButton.style.display = 'none';
+                playAudioButton.style.display = 'none';
+                lastSeparator.style.display = 'none';
+            }
         } else {
             var stopButton = document.getElementById("stop-button");
-            var lastSeparator = document.getElementById("last-separator");
             stopButton.style.display = 'block';
             // hide audio buttons
             recordButton.style.display = 'none';
@@ -255,12 +262,30 @@ define(function (require) {
         });
 
         playAudioButton.addEventListener('click', function(e) {
-            var fileName = cordova.file.externalApplicationStorageDirectory +
+            var fileName = 'file:///sdcard/ceibal/Mis Descargas/' +
                 "story_" + story.getImageNames() + ".wav";
             console.log('Play audio ' + fileName);
             var audio = new Audio(fileName);
             audio.play();
         });
+
+        // try make more responsive the buttons on touch devices
+        // by catching the touchend event
+        playAudioButton.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            e.target.click();
+        }, false);
+
+        recordButton.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            e.target.click();
+        }, false);
+
+        audioButton.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            e.target.click();
+        }, false);
+
 
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
